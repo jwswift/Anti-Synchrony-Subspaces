@@ -1,0 +1,956 @@
+(* Content-type: application/vnd.wolfram.mathematica *)
+
+(*** Wolfram Notebook File ***)
+(* http://www.wolfram.com/nb *)
+
+(* CreatedBy='Mathematica 12.2' *)
+
+(*CacheID: 234*)
+(* Internal cache information:
+NotebookFileLineBreakTest
+NotebookFileLineBreakTest
+NotebookDataPosition[       158,          7]
+NotebookDataLength[     37630,        948]
+NotebookOptionsPosition[     34881,        895]
+NotebookOutlinePosition[     35311,        912]
+CellTagsIndexPosition[     35268,        909]
+WindowFrame->Normal*)
+
+(* Beginning of Notebook Content *)
+Notebook[{
+Cell[TextData[{
+ "This Notebook uses recurrence relations to compute the table in Figure 6 of \
+\[OpenCurlyDoubleQuote]Invariant Synchrony and Anti-Synchrony Subspaces of \
+Weighted Networks\[CloseCurlyDoubleQuote] by Nijholt, Sieben and Swift.\n\n\
+The first part of a sequence, for example (",
+ Cell[BoxData[
+  FormBox[
+   RowBox[{
+    SubscriptBox["e", "n"], ")"}], TraditionalForm]],ExpressionUUID->
+  "3fd1a50a-b903-46ab-8958-0dba5a9ff11a"],
+ " = (",
+ Cell[BoxData[
+  FormBox[
+   SubscriptBox["e", "0"], TraditionalForm]],ExpressionUUID->
+  "ee4a9fb0-1838-46f6-a9ee-473984bf815d"],
+ ", ",
+ Cell[BoxData[
+  FormBox[
+   SubscriptBox["e", "1"], TraditionalForm]],ExpressionUUID->
+  "e82ec569-846d-4fcd-bcb9-201db98f2ac4"],
+ ", ",
+ Cell[BoxData[
+  FormBox[
+   SubscriptBox["e", "2"], TraditionalForm]],ExpressionUUID->
+  "910fdd0b-6979-4b3b-8ec6-5a434371386a"],
+ ", ...), is represented as a list with the name of the sequence.  Thus, (",
+ Cell[BoxData[
+  FormBox[
+   SubscriptBox["e", "0"], TraditionalForm]],ExpressionUUID->
+  "88ac8e5f-a1b1-4198-8d47-6884779d50d0"],
+ ", ",
+ Cell[BoxData[
+  FormBox[
+   SubscriptBox["e", "1"], TraditionalForm]],ExpressionUUID->
+  "b8c3141c-6db2-42b1-b37f-9940568b66de"],
+ ", ",
+ Cell[BoxData[
+  FormBox[
+   SubscriptBox["e", "2"], TraditionalForm]],ExpressionUUID->
+  "bd655a6b-4fcd-4c6a-b0f2-38b8bd8950d8"],
+ ", ..., ",
+ Cell[BoxData[
+  FormBox[
+   SubscriptBox["e", "n"], TraditionalForm]],ExpressionUUID->
+  "859ffd4d-7d20-4256-9e33-f66f05da6c75"],
+ ") \[LongLeftRightArrow] e = {e",
+ Cell[BoxData[
+  FormBox[
+   SubscriptBox["", "0"], TraditionalForm]],ExpressionUUID->
+  "612e135d-116e-4ef2-b6bf-4cdd223f8c87"],
+ ", ",
+ Cell[BoxData[
+  FormBox[
+   SubscriptBox["e", "1"], TraditionalForm]],ExpressionUUID->
+  "a0f11ece-277e-4663-a3af-3e649e4e22c3"],
+ ", ",
+ Cell[BoxData[
+  FormBox[
+   SubscriptBox["e", "2"], TraditionalForm]],ExpressionUUID->
+  "3335ad31-0b50-44b9-af4e-4951b8e526c1"],
+ ", ..., ",
+ Cell[BoxData[
+  FormBox[
+   SubscriptBox["e", "n"], TraditionalForm]],ExpressionUUID->
+  "f9dafabd-53d8-45db-9321-77560eeb60e7"],
+ "}.  Note that in Mathematica the first element of the list is e[[1]] = ",
+ Cell[BoxData[
+  FormBox[
+   SubscriptBox["e", "0"], TraditionalForm]],ExpressionUUID->
+  "cfaee01f-5afb-404f-a088-f668501bc2e3"],
+ ", and the last element of the list is  e[[n+1]] = ",
+ Cell[BoxData[
+  FormBox[
+   SubscriptBox["e", "n"], TraditionalForm]],ExpressionUUID->
+  "b1e5adff-ab1e-4387-b057-5983f9568d32"],
+ ".  \n\nThese computations use the recurrence relations of Proposition 7.20, \
+implemented using Remark 7.21.\nThis uses very low-level functions compared \
+the the EGF method.  The recurrence method could be programmed in a language \
+like C++ without a computer algebra system."
+}], "Text",
+ CellChangeTimes->{{3.861302708500183*^9, 3.861302879167323*^9}, {
+  3.8614011078134823`*^9, 3.861401144835391*^9}, {3.861401196231032*^9, 
+  3.861401197731166*^9}, {3.861402896552006*^9, 3.8614029579353867`*^9}, {
+  3.8614039045414*^9, 
+  3.861403975810342*^9}},ExpressionUUID->"c2c24569-3262-4c53-88ee-\
+7654f3fac1f3"],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"nMax", " ", "=", " ", "20"}], ";", " ", 
+  RowBox[{"(*", " ", 
+   RowBox[{
+   "A", " ", "global", " ", "variable", " ", "used", " ", "in", " ", "all", 
+    " ", "the", " ", 
+    RowBox[{"cells", ".", "  ", "So"}], " ", "this", " ", "cell", " ", "must",
+     " ", "be", " ", "run", " ", "first"}], " ", "*)"}]}]], "Input",
+ CellChangeTimes->{{3.861305174141451*^9, 3.861305189471426*^9}, {
+  3.8613128016804533`*^9, 3.861312802249119*^9}, {3.8613133724484653`*^9, 
+  3.861313401353998*^9}, {3.8614015386718063`*^9, 3.861401539319701*^9}},
+ CellLabel->"In[12]:=",ExpressionUUID->"a8c648c3-6b5c-412d-8846-66ab18d8d841"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[{
+ RowBox[{
+  RowBox[{"p", " ", "=", " ", 
+   RowBox[{"{", "1", "}"}]}], ";", " ", 
+  RowBox[{"(*", " ", 
+   RowBox[{
+    RowBox[{"initialize", " ", "with", " ", "p"}], " ", "=", " ", 
+    RowBox[{
+     RowBox[{"{", 
+      SubscriptBox["p", "0"], "}"}], " ", "=", " ", 
+     RowBox[{"{", "1", "}"}]}]}], " ", "*)"}], "\[IndentingNewLine]", 
+  RowBox[{"(*", " ", 
+   RowBox[{
+    SubscriptBox["p", "n"], " ", "=", " ", 
+    RowBox[{
+     RowBox[{"p", "[", 
+      RowBox[{"[", 
+       RowBox[{"-", "1"}], "]"}], "]"}], " ", "is", " ", "the", " ", "last", 
+     " ", "element", " ", "of", " ", "the", " ", "list", " ", 
+     RowBox[{"p", ".", " ", "Compute"}], " ", 
+     SubscriptBox["p", 
+      RowBox[{"n", "+", "1"}]], " ", "and", " ", "append", " ", "it", " ", 
+     "to", " ", "the", " ", "list", " ", 
+     RowBox[{"p", "."}]}]}], " ", "*)"}], "\[IndentingNewLine]", 
+  RowBox[{"For", "[", 
+   RowBox[{
+    RowBox[{"n", " ", "=", " ", "0"}], ",", " ", 
+    RowBox[{"n", " ", "<", " ", "nMax"}], ",", " ", 
+    RowBox[{"n", "++"}], ",", 
+    RowBox[{"AppendTo", "[", 
+     RowBox[{"p", ",", "  ", 
+      RowBox[{
+       RowBox[{"p", "[", 
+        RowBox[{"[", 
+         RowBox[{"-", "1"}], "]"}], "]"}], " ", "+", 
+       RowBox[{
+        UnderoverscriptBox["\[Sum]", 
+         RowBox[{"k", "=", "0"}], 
+         RowBox[{"n", "-", "1"}]], 
+        RowBox[{
+         UnderoverscriptBox["\[Sum]", 
+          RowBox[{"l", "=", "0"}], 
+          RowBox[{"n", "-", "k", "-", "1"}]], 
+         RowBox[{
+          FractionBox[
+           RowBox[{"n", "!"}], 
+           RowBox[{
+            RowBox[{"k", "!"}], " ", 
+            RowBox[{"l", "!"}], 
+            RowBox[{
+             RowBox[{"(", 
+              RowBox[{"n", "-", "k", "-", "l"}], ")"}], "!"}]}]], " ", 
+          RowBox[{"p", "[", 
+           RowBox[{"[", 
+            RowBox[{"k", "+", "1"}], "]"}], "]"}]}]}]}], " ", "+", " ", 
+       RowBox[{
+        UnderoverscriptBox["\[Sum]", 
+         RowBox[{"k", "=", "0"}], "n"], 
+        RowBox[{
+         FractionBox[
+          RowBox[{"n", "!"}], 
+          RowBox[{
+           RowBox[{"k", "!"}], " ", 
+           RowBox[{
+            RowBox[{"(", 
+             RowBox[{"n", "-", "k"}], ")"}], "!"}]}]], 
+         RowBox[{"p", "[", 
+          RowBox[{"[", 
+           RowBox[{"k", "+", "1"}], "]"}], "]"}]}]}]}]}], "]"}]}], "]"}], 
+  ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"Print", "[", 
+   RowBox[{
+   "\"\<The sequence (\!\(\*SubscriptBox[\(p\), \(n\)]\)) of the number of \
+polydiagonal subspaces of \!\(\*SuperscriptBox[\(R\), \(n\)]\) is \>\"", ",", 
+    " ", "p"}], "]"}], ";"}]}], "Input",
+ CellChangeTimes->{{3.861401714377314*^9, 3.861401858745216*^9}, {
+   3.8614021364876966`*^9, 3.861402141482149*^9}, {3.861402204021675*^9, 
+   3.8614022658694267`*^9}, {3.8614023010318604`*^9, 3.861402461991066*^9}, 
+   3.8614027232778482`*^9, 3.861402759429497*^9, {3.861402802992359*^9, 
+   3.8614028627853107`*^9}},
+ CellLabel->"In[13]:=",ExpressionUUID->"9d0087a4-a9c7-412c-a1b7-8399f4a3817a"],
+
+Cell[BoxData[
+ InterpretationBox[
+  RowBox[{"\<\"The sequence (\\!\\(\\*SubscriptBox[\\(p\\), \\(n\\)]\\)) of \
+the number of polydiagonal subspaces of \\!\\(\\*SuperscriptBox[\\(R\\), \\(n\
+\\)]\\) is \"\>", "\[InvisibleSpace]", 
+   RowBox[{"{", 
+    RowBox[{
+    "1", ",", "2", ",", "6", ",", "24", ",", "116", ",", "648", ",", "4088", 
+     ",", "28640", ",", "219920", ",", "1832224", ",", "16430176", ",", 
+     "157554048", ",", "1606879040", ",", "17350255744", ",", "197553645440", 
+     ",", "2363935624704", ",", "29638547505408", ",", "388328781668864", ",",
+      "5304452565517824", ",", "75381218537805824", ",", 
+     "1112348880749130752"}], "}"}]}],
+  SequenceForm[
+  "The sequence (\!\(\*SubscriptBox[\(p\), \(n\)]\)) of the number of \
+polydiagonal subspaces of \!\(\*SuperscriptBox[\(R\), \(n\)]\) is ", {1, 2, 6,
+    24, 116, 648, 4088, 28640, 219920, 1832224, 16430176, 157554048, 
+   1606879040, 17350255744, 197553645440, 2363935624704, 29638547505408, 
+   388328781668864, 5304452565517824, 75381218537805824, 1112348880749130752}],
+  Editable->False]], "Print",
+ CellChangeTimes->{3.861401859916092*^9, 3.861402142772106*^9, 
+  3.8614024625257463`*^9, 3.8614027241106377`*^9, 3.8614027726368628`*^9, 
+  3.861403063846998*^9, 3.8614031648536797`*^9, 3.861404064019793*^9, 
+  3.8614041407001266`*^9, 3.861404293743478*^9},
+ CellLabel->
+  "During evaluation of \
+In[13]:=",ExpressionUUID->"c1a3cff1-25fa-4759-a242-a1a5cfd8b24c"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[{
+ RowBox[{
+  RowBox[{
+   RowBox[{"s", " ", "=", " ", 
+    RowBox[{"{", "1", "}"}]}], ";"}], "\[IndentingNewLine]", 
+  RowBox[{"(*", " ", 
+   RowBox[{
+    RowBox[{"initialize", " ", "with", " ", "s"}], " ", "=", " ", 
+    RowBox[{
+     RowBox[{"{", 
+      SubscriptBox["s", "0"], "}"}], " ", "=", " ", 
+     RowBox[{"{", "1", "}"}]}]}], " ", "*)"}], "\[IndentingNewLine]", 
+  RowBox[{"(*", " ", 
+   RowBox[{"Compute", " ", 
+    SubscriptBox["s", 
+     RowBox[{"n", "+", "1"}]], " ", "and", " ", "append", " ", "it", " ", 
+    "to", " ", "the", " ", "list", " ", 
+    RowBox[{"s", "."}]}], " ", "*)"}]}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"For", "[", 
+   RowBox[{
+    RowBox[{"n", " ", "=", " ", "0"}], ",", " ", 
+    RowBox[{"n", " ", "<", " ", "nMax"}], ",", " ", 
+    RowBox[{"n", "++"}], ",", 
+    RowBox[{"AppendTo", "[", 
+     RowBox[{"s", ",", "  ", 
+      RowBox[{
+       UnderoverscriptBox["\[Sum]", 
+        RowBox[{"k", "=", "0"}], "n"], 
+       RowBox[{
+        FractionBox[
+         RowBox[{"n", "!"}], 
+         RowBox[{
+          RowBox[{"k", "!"}], " ", 
+          RowBox[{
+           RowBox[{"(", 
+            RowBox[{"n", "-", "k"}], ")"}], "!"}]}]], 
+        RowBox[{"s", "[", 
+         RowBox[{"[", 
+          RowBox[{"k", "+", "1"}], "]"}], "]"}]}]}]}], "]"}]}], "]"}], 
+  ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"Print", "[", 
+   RowBox[{
+   "\"\<The sequence (\!\(\*SubscriptBox[\(s\), \(n\)]\)) of the number of \
+synchrony subspaces of \!\(\*SuperscriptBox[\(R\), \(n\)]\) is \>\"", ",", 
+    " ", "s"}], "]"}], ";"}]}], "Input",
+ CellChangeTimes->{{3.861401714377314*^9, 3.861401858745216*^9}, {
+   3.8614021364876966`*^9, 3.861402141482149*^9}, 3.861402763359768*^9, {
+   3.8614028691761208`*^9, 3.8614028880919867`*^9}},
+ CellLabel->"In[15]:=",ExpressionUUID->"5e151c00-e1e6-43b6-b7ef-4d141473d5e9"],
+
+Cell[BoxData[
+ InterpretationBox[
+  RowBox[{"\<\"The sequence (\\!\\(\\*SubscriptBox[\\(s\\), \\(n\\)]\\)) of \
+the number of synchrony subspaces of \\!\\(\\*SuperscriptBox[\\(R\\), \
+\\(n\\)]\\) is \"\>", "\[InvisibleSpace]", 
+   RowBox[{"{", 
+    RowBox[{
+    "1", ",", "1", ",", "2", ",", "5", ",", "15", ",", "52", ",", "203", ",", 
+     "877", ",", "4140", ",", "21147", ",", "115975", ",", "678570", ",", 
+     "4213597", ",", "27644437", ",", "190899322", ",", "1382958545", ",", 
+     "10480142147", ",", "82864869804", ",", "682076806159", ",", 
+     "5832742205057", ",", "51724158235372"}], "}"}]}],
+  SequenceForm[
+  "The sequence (\!\(\*SubscriptBox[\(s\), \(n\)]\)) of the number of \
+synchrony subspaces of \!\(\*SuperscriptBox[\(R\), \(n\)]\) is ", {1, 1, 2, 5,
+    15, 52, 203, 877, 4140, 21147, 115975, 678570, 4213597, 27644437, 
+   190899322, 1382958545, 10480142147, 82864869804, 682076806159, 
+   5832742205057, 51724158235372}],
+  Editable->False]], "Print",
+ CellChangeTimes->{3.8614031648590527`*^9, 3.8614040640250397`*^9, 
+  3.8614041407222357`*^9, 3.861404293749867*^9},
+ CellLabel->
+  "During evaluation of \
+In[15]:=",ExpressionUUID->"f045fb38-a2d8-423a-94e5-6dde8f15e00b"]
+}, Open  ]],
+
+Cell[TextData[{
+ "To get the number of anti-synchrony subspaces use the fact that ",
+ Cell[BoxData[
+  FormBox[
+   SubscriptBox["a", "n"], TraditionalForm]],
+  FormatType->TraditionalForm,ExpressionUUID->
+  "63e8fe97-c58b-413d-90c9-ac604ed9ea29"],
+ " = ",
+ Cell[BoxData[
+  FormBox[
+   SubscriptBox["p", "n"], TraditionalForm]],
+  FormatType->TraditionalForm,ExpressionUUID->
+  "b02941c4-60b5-41c2-a4d6-5e71bf8494c3"],
+ " - ",
+ Cell[BoxData[
+  FormBox[
+   SubscriptBox["s", "n"], TraditionalForm]],
+  FormatType->TraditionalForm,ExpressionUUID->
+  "f47a5156-58dd-47e4-86f8-231ba40504cd"]
+}], "Text",
+ CellChangeTimes->{{3.861403186893873*^9, 3.8614032077442513`*^9}, {
+  3.861403244434279*^9, 3.8614032560195827`*^9}, {3.8614034062081337`*^9, 
+  3.8614034238790493`*^9}},ExpressionUUID->"11e351df-5f77-40eb-86ff-\
+86814cecc4f1"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"Print", "[", 
+  RowBox[{
+  "\"\<The sequence (\!\(\*SubscriptBox[\(a\), \(n\)]\)) of the number of \
+anti-synchrony subspaces of \!\(\*SuperscriptBox[\(R\), \(n\)]\) is \>\"", 
+   ",", " ", 
+   RowBox[{"a", " ", "=", " ", 
+    RowBox[{"p", " ", "-", " ", "s"}]}]}], "]"}]], "Input",
+ CellChangeTimes->{{3.861403211900651*^9, 3.861403233171439*^9}},
+ CellLabel->"In[18]:=",ExpressionUUID->"0cc7400e-19c2-4116-b361-991ee1d58279"],
+
+Cell[BoxData[
+ InterpretationBox[
+  RowBox[{"\<\"The sequence (\\!\\(\\*SubscriptBox[\\(a\\), \\(n\\)]\\)) of \
+the number of anti-synchrony subspaces of \\!\\(\\*SuperscriptBox[\\(R\\), \
+\\(n\\)]\\) is \"\>", "\[InvisibleSpace]", 
+   RowBox[{"{", 
+    RowBox[{
+    "0", ",", "1", ",", "4", ",", "19", ",", "101", ",", "596", ",", "3885", 
+     ",", "27763", ",", "215780", ",", "1811077", ",", "16314201", ",", 
+     "156875478", ",", "1602665443", ",", "17322611307", ",", "197362746118", 
+     ",", "2362552666159", ",", "29628067363261", ",", "388245916799060", ",",
+      "5303770488711665", ",", "75375385795600767", ",", 
+     "1112297156590895380"}], "}"}]}],
+  SequenceForm[
+  "The sequence (\!\(\*SubscriptBox[\(a\), \(n\)]\)) of the number of \
+anti-synchrony subspaces of \!\(\*SuperscriptBox[\(R\), \(n\)]\) is ", {0, 1, 
+   4, 19, 101, 596, 3885, 27763, 215780, 1811077, 16314201, 156875478, 
+   1602665443, 17322611307, 197362746118, 2362552666159, 29628067363261, 
+   388245916799060, 5303770488711665, 75375385795600767, 1112297156590895380}],
+  Editable->False]], "Print",
+ CellChangeTimes->{3.8614032591708593`*^9, 3.8614040640467987`*^9, 
+  3.861404140727191*^9, 3.8614042937757473`*^9},
+ CellLabel->
+  "During evaluation of \
+In[18]:=",ExpressionUUID->"1fb5836c-1a85-4c99-bfdb-53338cb0c7ca"]
+}, Open  ]],
+
+Cell[TextData[{
+ "To get the minimally tagged subspaces use the fact that ",
+ Cell[BoxData[
+  FormBox[
+   SubscriptBox["m", "n"], TraditionalForm]],
+  FormatType->TraditionalForm,ExpressionUUID->
+  "f79e7332-19f1-471b-bfef-e0efc413c5f4"],
+ " = ",
+ Cell[BoxData[
+  FormBox[
+   SubscriptBox["s", 
+    RowBox[{"n", "+", "1"}]], TraditionalForm]],
+  FormatType->TraditionalForm,ExpressionUUID->
+  "79654069-dfd8-4283-b276-04b23d9e0966"],
+ " - ",
+ Cell[BoxData[
+  FormBox[
+   SubscriptBox["s", "n"], TraditionalForm]],
+  FormatType->TraditionalForm,ExpressionUUID->
+  "f4527000-fa5c-4c23-9aa7-7fbaa7714546"],
+ ".  Make a list of ",
+ Cell[BoxData[
+  FormBox[
+   SubscriptBox["s", 
+    RowBox[{"n", "+", "1"}]], TraditionalForm]],
+  FormatType->TraditionalForm,ExpressionUUID->
+  "26771288-da83-4b03-a529-12cae2d7ed06"],
+ " starting with n = 0 by first making a list of (",
+ Cell[BoxData[
+  FormBox[
+   SubscriptBox["s", "n"], TraditionalForm]],
+  FormatType->TraditionalForm,ExpressionUUID->
+  "ef2baf06-4b8a-4148-9e81-f9a6b5d320c6"],
+ ") with nMax+1 terms, and then dropping the first term."
+}], "Text",
+ CellChangeTimes->{{3.8614033646240473`*^9, 3.861403467832747*^9}, {
+  3.861403603486349*^9, 
+  3.861403706497857*^9}},ExpressionUUID->"49b47dfe-f120-4531-b5fc-\
+b856267ca9a7"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[{
+ RowBox[{
+  RowBox[{
+   RowBox[{"snp1", " ", "=", " ", 
+    RowBox[{"{", "1", "}"}]}], ";"}], "\[IndentingNewLine]", 
+  RowBox[{"(*", " ", 
+   RowBox[{
+    RowBox[{"initialize", " ", "with", " ", "snp1"}], " ", "=", " ", 
+    RowBox[{
+     RowBox[{"{", 
+      SubscriptBox["s", "0"], "}"}], " ", "=", " ", 
+     RowBox[{"{", "1", "}"}]}]}], " ", "*)"}], "\[IndentingNewLine]", 
+  RowBox[{"(*", " ", 
+   RowBox[{"Compute", " ", 
+    SubscriptBox["s", 
+     RowBox[{"n", "+", "1"}]], " ", "and", " ", "append", " ", "it", " ", 
+    "to", " ", "the", " ", "list", " ", 
+    RowBox[{"snp1", "."}]}], " ", "*)"}]}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"For", "[", 
+   RowBox[{
+    RowBox[{"n", " ", "=", " ", "0"}], ",", " ", 
+    RowBox[{"n", " ", "<", " ", 
+     RowBox[{"nMax", "+", "1"}]}], ",", " ", 
+    RowBox[{"n", "++"}], ",", 
+    RowBox[{"AppendTo", "[", 
+     RowBox[{"snp1", ",", "  ", 
+      RowBox[{
+       UnderoverscriptBox["\[Sum]", 
+        RowBox[{"k", "=", "0"}], "n"], 
+       RowBox[{
+        FractionBox[
+         RowBox[{"n", "!"}], 
+         RowBox[{
+          RowBox[{"k", "!"}], " ", 
+          RowBox[{
+           RowBox[{"(", 
+            RowBox[{"n", "-", "k"}], ")"}], "!"}]}]], 
+        RowBox[{"snp1", "[", 
+         RowBox[{"[", 
+          RowBox[{"k", "+", "1"}], "]"}], "]"}]}]}]}], "]"}]}], "]"}], 
+  ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"Print", "[", 
+   RowBox[{
+   "\"\<The sequence (\!\(\*SubscriptBox[\(m\), \(n\)]\)) of the number of \
+minimally tagged subspaces of \!\(\*SuperscriptBox[\(R\), \(n\)]\) is \>\"", 
+    ",", " ", 
+    RowBox[{"m", " ", "=", " ", 
+     RowBox[{
+      RowBox[{"Drop", "[", 
+       RowBox[{"snp1", ",", " ", "1"}], "]"}], " ", "-", " ", "s"}]}]}], 
+   "]"}], ";"}]}], "Input",
+ CellChangeTimes->{{3.861401714377314*^9, 3.861401858745216*^9}, {
+   3.8614021364876966`*^9, 3.861402141482149*^9}, 3.861402763359768*^9, {
+   3.8614028691761208`*^9, 3.8614028880919867`*^9}, {3.861403512685692*^9, 
+   3.8614035858295307`*^9}, {3.861403744840909*^9, 3.86140378712827*^9}},
+ CellLabel->"In[19]:=",ExpressionUUID->"fd346542-f930-4f39-9dff-407712bcd722"],
+
+Cell[BoxData[
+ InterpretationBox[
+  RowBox[{"\<\"The sequence (\\!\\(\\*SubscriptBox[\\(m\\), \\(n\\)]\\)) of \
+the number of minimally tagged subspaces of \\!\\(\\*SuperscriptBox[\\(R\\), \
+\\(n\\)]\\) is \"\>", "\[InvisibleSpace]", 
+   RowBox[{"{", 
+    RowBox[{
+    "0", ",", "1", ",", "3", ",", "10", ",", "37", ",", "151", ",", "674", 
+     ",", "3263", ",", "17007", ",", "94828", ",", "562595", ",", "3535027", 
+     ",", "23430840", ",", "163254885", ",", "1192059223", ",", "9097183602", 
+     ",", "72384727657", ",", "599211936355", ",", "5150665398898", ",", 
+     "45891416030315", ",", "423145657921379"}], "}"}]}],
+  SequenceForm[
+  "The sequence (\!\(\*SubscriptBox[\(m\), \(n\)]\)) of the number of \
+minimally tagged subspaces of \!\(\*SuperscriptBox[\(R\), \(n\)]\) is ", {0, 
+   1, 3, 10, 37, 151, 674, 3263, 17007, 94828, 562595, 3535027, 23430840, 
+   163254885, 1192059223, 9097183602, 72384727657, 599211936355, 
+   5150665398898, 45891416030315, 423145657921379}],
+  Editable->False]], "Print",
+ CellChangeTimes->{3.8614035562049026`*^9, 3.8614035866559563`*^9, 
+  3.861403788344955*^9, 3.861404064051785*^9, 3.8614041407326*^9, 
+  3.8614042937813997`*^9},
+ CellLabel->
+  "During evaluation of \
+In[19]:=",ExpressionUUID->"28d68dd5-1d8d-43c4-a36c-210a7811807d"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[{
+ RowBox[{
+  RowBox[{
+   RowBox[{"f", " ", "=", " ", 
+    RowBox[{"{", "1", "}"}]}], ";"}], "\[IndentingNewLine]", 
+  RowBox[{"(*", " ", 
+   RowBox[{
+    RowBox[{"initialize", " ", "with", " ", "f"}], " ", "=", " ", 
+    RowBox[{
+     RowBox[{"{", 
+      SubscriptBox["f", "0"], "}"}], " ", "=", " ", 
+     RowBox[{"{", "1", "}"}]}]}], " ", "*)"}], "\[IndentingNewLine]", 
+  RowBox[{"(*", " ", 
+   RowBox[{"Compute", " ", 
+    SubscriptBox["f", 
+     RowBox[{"n", "+", "1"}]], " ", "and", " ", "append", " ", "it", " ", 
+    "to", " ", "the", " ", "list", " ", 
+    RowBox[{"f", "."}]}], " ", "*)"}]}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"For", "[", 
+   RowBox[{
+    RowBox[{"n", " ", "=", " ", "0"}], ",", " ", 
+    RowBox[{"n", " ", "<", " ", "nMax"}], ",", " ", 
+    RowBox[{"n", "++"}], ",", 
+    RowBox[{"AppendTo", "[", 
+     RowBox[{"f", ",", "  ", 
+      RowBox[{
+       RowBox[{"f", "[", 
+        RowBox[{"[", 
+         RowBox[{"-", "1"}], "]"}], "]"}], " ", "+", 
+       RowBox[{
+        UnderoverscriptBox["\[Sum]", 
+         RowBox[{"k", "=", "0"}], 
+         RowBox[{"n", "-", "1"}]], 
+        RowBox[{
+         UnderoverscriptBox["\[Sum]", 
+          RowBox[{"l", "=", "0"}], 
+          RowBox[{"n", "-", "k", "-", "1"}]], 
+         RowBox[{
+          FractionBox[
+           RowBox[{"n", "!"}], 
+           RowBox[{
+            RowBox[{"k", "!"}], " ", 
+            RowBox[{"l", "!"}], 
+            RowBox[{
+             RowBox[{"(", 
+              RowBox[{"n", "-", "k", "-", "l"}], ")"}], "!"}]}]], " ", 
+          RowBox[{"f", "[", 
+           RowBox[{"[", 
+            RowBox[{"k", "+", "1"}], "]"}], "]"}]}]}]}]}]}], " ", "]"}]}], 
+   "]"}], ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"Print", "[", 
+   RowBox[{
+   "\"\<The sequence (\!\(\*SubscriptBox[\(f\), \(n\)]\)) of the number of \
+synchrony subspaces of \!\(\*SuperscriptBox[\(R\), \(n\)]\) is \\n\>\"", ",", 
+    " ", "f"}], "]"}], ";"}]}], "Input",
+ CellChangeTimes->{{3.861401714377314*^9, 3.861401858745216*^9}, {
+   3.8614021364876966`*^9, 3.861402141482149*^9}, 3.861402763359768*^9, {
+   3.8614028691761208`*^9, 3.8614028880919867`*^9}, {3.8614029884328833`*^9, 
+   3.8614030419703417`*^9}, 3.861403093783903*^9, {3.861403287070572*^9, 
+   3.861403287654808*^9}},
+ CellLabel->"In[22]:=",ExpressionUUID->"b1c2de94-31f7-4395-81d3-d4e642baeb21"],
+
+Cell[BoxData[
+ InterpretationBox[
+  RowBox[{"\<\"The sequence (\\!\\(\\*SubscriptBox[\\(f\\), \\(n\\)]\\)) of \
+the number of synchrony subspaces of \\!\\(\\*SuperscriptBox[\\(R\\), \
+\\(n\\)]\\) is \\n\"\>", "\[InvisibleSpace]", 
+   RowBox[{"{", 
+    RowBox[{
+    "1", ",", "1", ",", "2", ",", "7", ",", "29", ",", "136", ",", "737", ",",
+      "4537", ",", "30914", ",", "229831", ",", "1850717", ",", "16036912", 
+     ",", "148573889", ",", "1463520241", ",", "15259826402", ",", 
+     "167789512807", ",", "1939125333629", ",", "23484982837816", ",", 
+     "297289975208417", ",", "3924325664733097", ",", "53906145745657634"}], 
+    "}"}]}],
+  SequenceForm[
+  "The sequence (\!\(\*SubscriptBox[\(f\), \(n\)]\)) of the number of \
+synchrony subspaces of \!\(\*SuperscriptBox[\(R\), \(n\)]\) is \n", {1, 1, 2, 
+   7, 29, 136, 737, 4537, 30914, 229831, 1850717, 16036912, 148573889, 
+   1463520241, 15259826402, 167789512807, 1939125333629, 23484982837816, 
+   297289975208417, 3924325664733097, 53906145745657634}],
+  Editable->False]], "Print",
+ CellChangeTimes->{3.861401859916092*^9, 3.861402142772106*^9, 
+  3.861402772641621*^9, 3.86140304333955*^9, 3.861403095813135*^9, 
+  3.861403164891893*^9, 3.861403288244253*^9, 3.861404064060608*^9, 
+  3.861404140755731*^9, 3.861404293806748*^9},
+ CellLabel->
+  "During evaluation of \
+In[22]:=",ExpressionUUID->"dd3b5764-03d8-4242-9c6b-7e08438a4745"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[{
+ RowBox[{
+  RowBox[{
+   RowBox[{"e", " ", "=", " ", 
+    RowBox[{"{", "1", "}"}]}], ";"}], " ", 
+  RowBox[{"(*", 
+   RowBox[{
+    RowBox[{"initialize", " ", "with", " ", "e"}], " ", "=", " ", 
+    RowBox[{
+     RowBox[{"{", 
+      SubscriptBox["e", "0"], "}"}], " ", "=", " ", 
+     RowBox[{"{", "1", "}"}]}]}], " ", "*)"}], "\[IndentingNewLine]", 
+  RowBox[{"(*", " ", 
+   RowBox[{
+    SubscriptBox["e", "n"], " ", "=", " ", 
+    RowBox[{
+     RowBox[{
+      RowBox[{"e", "[", 
+       RowBox[{"[", 
+        RowBox[{"-", "1"}], "]"}], "]"}], " ", "is", " ", "the", " ", "last", 
+      " ", "element", " ", "of", " ", "the", " ", "list", " ", 
+      RowBox[{"e", ".", " ", "Compute"}], " ", 
+      SubscriptBox["e", 
+       RowBox[{"n", "+", "1"}]], " ", "and", " ", "append", " ", "it", " ", 
+      "to", " ", "the", " ", "list", " ", 
+      RowBox[{"e", ".", " ", "Note"}], " ", "that", " ", 
+      SubscriptBox["e", 
+       RowBox[{"n", "-", 
+        RowBox[{"2", "l"}], "-", "1"}]]}], " ", "=", " ", 
+     RowBox[{"e", "[", 
+      RowBox[{"[", 
+       RowBox[{"n", "-", 
+        RowBox[{"2", "l"}]}], "]"}], "]"}]}]}], 
+   "*)"}]}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"For", "[", 
+   RowBox[{
+    RowBox[{"n", " ", "=", " ", "0"}], ",", " ", 
+    RowBox[{"n", " ", "<", " ", "nMax"}], ",", " ", 
+    RowBox[{"n", "++"}], ",", 
+    RowBox[{"AppendTo", "[", 
+     RowBox[{"e", ",", " ", 
+      RowBox[{
+       RowBox[{"e", "[", 
+        RowBox[{"[", 
+         RowBox[{"-", "1"}], "]"}], "]"}], "+", " ", 
+       RowBox[{
+        UnderoverscriptBox["\[Sum]", 
+         RowBox[{"l", "=", "0"}], 
+         RowBox[{"Floor", "[", 
+          RowBox[{
+           RowBox[{"(", 
+            RowBox[{"n", "-", "1"}], ")"}], "/", "2"}], "]"}]], 
+        RowBox[{
+         FractionBox[
+          RowBox[{"n", "!"}], 
+          RowBox[{
+           RowBox[{
+            RowBox[{"(", 
+             RowBox[{"n", "-", 
+              RowBox[{"2", "l"}], "-", "1"}], ")"}], "!"}], " ", 
+           RowBox[{"l", "!"}], 
+           RowBox[{
+            RowBox[{"(", 
+             RowBox[{"l", "+", "1"}], ")"}], "!"}]}]], 
+         RowBox[{"e", "[", 
+          RowBox[{"[", 
+           RowBox[{"n", "-", 
+            RowBox[{"2", "l"}]}], "]"}], "]"}]}]}]}]}], "]"}]}], "]"}], 
+  ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"Print", "[", 
+   RowBox[{
+   "\"\<The sequence (\!\(\*SubscriptBox[\(e\), \(n\)]\)) of the number of \
+evenly tagged polydiagonal subspaces of \!\(\*SuperscriptBox[\(R\), \(n\)]\) \
+is \>\"", ",", " ", "e"}], "]"}], ";"}]}], "Input",
+ CellChangeTimes->{{3.8613124961601877`*^9, 3.86131254139851*^9}, {
+   3.861312590856927*^9, 3.861312634575286*^9}, {3.861312701938861*^9, 
+   3.861312776238009*^9}, 3.861312844867568*^9, {3.861312881814415*^9, 
+   3.861312909926711*^9}, {3.861312999616947*^9, 3.861313021924468*^9}, {
+   3.8613130969409313`*^9, 3.86131312940309*^9}, 3.861313287109188*^9, {
+   3.86131344880247*^9, 3.861313476720069*^9}, 3.8614016563088713`*^9},
+ CellLabel->"In[25]:=",ExpressionUUID->"32c399e0-9275-4847-9eb1-b0e737536c29"],
+
+Cell[BoxData[
+ InterpretationBox[
+  RowBox[{"\<\"The sequence (\\!\\(\\*SubscriptBox[\\(e\\), \\(n\\)]\\)) of \
+the number of evenly tagged polydiagonal subspaces of \
+\\!\\(\\*SuperscriptBox[\\(R\\), \\(n\\)]\\) is \"\>", "\[InvisibleSpace]", 
+   RowBox[{"{", 
+    RowBox[{
+    "1", ",", "1", ",", "2", ",", "4", ",", "13", ",", "41", ",", "176", ",", 
+     "722", ",", "3774", ",", "18958", ",", "116302", ",", "687182", ",", 
+     "4812226", ",", "32541874", ",", "255274826", ",", "1938568634", ",", 
+     "16798483589", ",", "141220228149", ",", "1337121257864", ",", 
+     "12305678519102", ",", "126208299343263"}], "}"}]}],
+  SequenceForm[
+  "The sequence (\!\(\*SubscriptBox[\(e\), \(n\)]\)) of the number of evenly \
+tagged polydiagonal subspaces of \!\(\*SuperscriptBox[\(R\), \(n\)]\) is ", {
+   1, 1, 2, 4, 13, 41, 176, 722, 3774, 18958, 116302, 687182, 4812226, 
+   32541874, 255274826, 1938568634, 16798483589, 141220228149, 1337121257864, 
+   12305678519102, 126208299343263}],
+  Editable->False]], "Print",
+ CellChangeTimes->{
+  3.861313415120862*^9, {3.8613134613661337`*^9, 3.861313477243629*^9}, 
+   3.861313592839857*^9, {3.861401621541407*^9, 3.86140162879569*^9}, 
+   3.86140277266611*^9, 3.861403164897122*^9, 3.861404064083385*^9, 
+   3.861404140761527*^9, 3.8614042938135653`*^9},
+ CellLabel->
+  "During evaluation of \
+In[25]:=",ExpressionUUID->"3647bb34-43ed-4b9e-9733-5e5d272d224d"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[{
+ RowBox[{
+  RowBox[{"tableRecurrence", " ", "=", " ", 
+   RowBox[{"{", 
+    RowBox[{
+     RowBox[{"Range", "[", 
+      RowBox[{"0", ",", " ", "nMax"}], "]"}], ",", "p", ",", " ", "s", ",", 
+     " ", "a", ",", " ", "m", ",", " ", "f", ",", " ", "e"}], "}"}]}], 
+  ";"}], "\[IndentingNewLine]", 
+ RowBox[{"TableForm", "[", 
+  RowBox[{"tableRecurrence", ",", " ", 
+   RowBox[{"TableHeadings", " ", "\[Rule]", 
+    RowBox[{"{", 
+     RowBox[{
+      RowBox[{"{", 
+       RowBox[{
+       "\"\<n\>\"", ",", "\"\<\!\(\*SubscriptBox[\(p\), \(n\)]\)\>\"", ",", 
+        " ", "\"\<\!\(\*SubscriptBox[\(s\), \(n\)]\)\>\"", ",", " ", 
+        "\"\<\!\(\*SubscriptBox[\(a\), \(n\)]\)\>\"", ",", " ", 
+        "\"\<\!\(\*SubscriptBox[\(m\), \(n\)]\)\>\"", ",", " ", 
+        "\"\<\!\(\*SubscriptBox[\(f\), \(n\)]\)\>\"", ",", " ", 
+        "\"\<\!\(\*SubscriptBox[\(e\), \(n\)]\)\>\""}], "}"}], ",", " ", 
+      "None"}], "}"}]}]}], "]"}]}], "Input",
+ CellChangeTimes->{{3.861403838312042*^9, 3.861403846622229*^9}},
+ CellLabel->"In[28]:=",ExpressionUUID->"19fef3dd-6083-4626-b353-3410eb86c997"],
+
+Cell[BoxData[
+ TagBox[
+  TagBox[GridBox[{
+     {
+      TagBox["\<\"n\"\>",
+       HoldForm], "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", 
+      "11", "12", "13", "14", "15", "16", "17", "18", "19", "20"},
+     {
+      TagBox["\<\"\\!\\(\\*SubscriptBox[\\(p\\), \\(n\\)]\\)\"\>",
+       HoldForm], "1", "2", "6", "24", "116", "648", "4088", "28640", 
+      "219920", "1832224", "16430176", "157554048", "1606879040", 
+      "17350255744", "197553645440", "2363935624704", "29638547505408", 
+      "388328781668864", "5304452565517824", "75381218537805824", 
+      "1112348880749130752"},
+     {
+      TagBox["\<\"\\!\\(\\*SubscriptBox[\\(s\\), \\(n\\)]\\)\"\>",
+       HoldForm], "1", "1", "2", "5", "15", "52", "203", "877", "4140", 
+      "21147", "115975", "678570", "4213597", "27644437", "190899322", 
+      "1382958545", "10480142147", "82864869804", "682076806159", 
+      "5832742205057", "51724158235372"},
+     {
+      TagBox["\<\"\\!\\(\\*SubscriptBox[\\(a\\), \\(n\\)]\\)\"\>",
+       HoldForm], "0", "1", "4", "19", "101", "596", "3885", "27763", 
+      "215780", "1811077", "16314201", "156875478", "1602665443", 
+      "17322611307", "197362746118", "2362552666159", "29628067363261", 
+      "388245916799060", "5303770488711665", "75375385795600767", 
+      "1112297156590895380"},
+     {
+      TagBox["\<\"\\!\\(\\*SubscriptBox[\\(m\\), \\(n\\)]\\)\"\>",
+       HoldForm], "0", "1", "3", "10", "37", "151", "674", "3263", "17007", 
+      "94828", "562595", "3535027", "23430840", "163254885", "1192059223", 
+      "9097183602", "72384727657", "599211936355", "5150665398898", 
+      "45891416030315", "423145657921379"},
+     {
+      TagBox["\<\"\\!\\(\\*SubscriptBox[\\(f\\), \\(n\\)]\\)\"\>",
+       HoldForm], "1", "1", "2", "7", "29", "136", "737", "4537", "30914", 
+      "229831", "1850717", "16036912", "148573889", "1463520241", 
+      "15259826402", "167789512807", "1939125333629", "23484982837816", 
+      "297289975208417", "3924325664733097", "53906145745657634"},
+     {
+      TagBox["\<\"\\!\\(\\*SubscriptBox[\\(e\\), \\(n\\)]\\)\"\>",
+       HoldForm], "1", "1", "2", "4", "13", "41", "176", "722", "3774", 
+      "18958", "116302", "687182", "4812226", "32541874", "255274826", 
+      "1938568634", "16798483589", "141220228149", "1337121257864", 
+      "12305678519102", "126208299343263"}
+    },
+    GridBoxAlignment->{"Columns" -> {{Left}}, "Rows" -> {{Baseline}}},
+    GridBoxDividers->{
+     "Columns" -> {False, True, {False}, False}, "Rows" -> {{False}}},
+    GridBoxSpacings->{"Columns" -> {
+        Offset[0.27999999999999997`], {
+         Offset[2.0999999999999996`]}, 
+        Offset[0.27999999999999997`]}, "Rows" -> {
+        Offset[0.2], {
+         Offset[0.4]}, 
+        Offset[0.2]}}],
+   {OutputFormsDump`HeadedRows, None}],
+  Function[BoxForm`e$, 
+   TableForm[
+   BoxForm`e$, 
+    TableHeadings -> {{
+      "n", "\!\(\*SubscriptBox[\(p\), \(n\)]\)", 
+       "\!\(\*SubscriptBox[\(s\), \(n\)]\)", 
+       "\!\(\*SubscriptBox[\(a\), \(n\)]\)", 
+       "\!\(\*SubscriptBox[\(m\), \(n\)]\)", 
+       "\!\(\*SubscriptBox[\(f\), \(n\)]\)", 
+       "\!\(\*SubscriptBox[\(e\), \(n\)]\)"}, None}]]]], "Output",
+ CellChangeTimes->{3.8614038473030167`*^9, 3.861404064088834*^9, 
+  3.8614041407671633`*^9, 3.861404293839613*^9},
+ CellLabel->
+  "Out[29]//TableForm=",ExpressionUUID->"94a006fd-7512-4e9d-b171-\
+d2f9ec922b99"]
+}, Open  ]],
+
+Cell["\<\
+Run the Sequences-EGF.nb notebook first (select all then run), and then run \
+this Sequences-recurrence.nb notebook and the next line should return \
+\[OpenCurlyDoubleQuote]True\[CloseCurlyDoubleQuote] indicating that both \
+methods give the same results. \
+\>", "Text",
+ CellChangeTimes->{{3.8614044090690813`*^9, 3.861404526766219*^9}, 
+   3.861404653275031*^9},ExpressionUUID->"e2b2863e-aff1-4a4c-a7e0-\
+b442ce6f8020"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"tableRecurrence", "\[Equal]", " ", "tableEGF"}]], "Input",
+ CellChangeTimes->{{3.861404067902638*^9, 3.861404116699798*^9}, {
+  3.861404489444824*^9, 
+  3.861404490959732*^9}},ExpressionUUID->"84dc143c-86ba-4bef-a52e-\
+edb5c6ad6dbc"],
+
+Cell[BoxData["True"], "Output",
+ CellChangeTimes->{3.861404086587315*^9, 3.861404140790559*^9, 
+  3.861404293845223*^9},
+ CellLabel->"Out[30]=",ExpressionUUID->"b1b47605-4b81-4009-8bcf-5afef7d654fb"]
+}, Open  ]],
+
+Cell[TextData[{
+ "Note that  ",
+ Cell[BoxData[
+  FormBox[
+   SubscriptBox["s", "n"], TraditionalForm]],ExpressionUUID->
+  "490652e7-8f50-4e79-890a-a081d8947734"],
+ " =  ",
+ Cell[BoxData[
+  FormBox[
+   SubscriptBox["e", "n"], TraditionalForm]],ExpressionUUID->
+  "27c8d9f5-1963-4784-a835-8131fa5b47bb"],
+ " for n = 0, 1, 2, and ",
+ Cell[BoxData[
+  FormBox[
+   SubscriptBox["s", "n"], TraditionalForm]],ExpressionUUID->
+  "9e897885-bc7f-4310-b468-853308b08f69"],
+ " > ",
+ Cell[BoxData[
+  FormBox[
+   SubscriptBox["e", "n"], TraditionalForm]],ExpressionUUID->
+  "11b2c28c-6246-4e2e-a823-f05eb2769462"],
+ " for  3 \[LessEqual] n \[LessEqual] 9, and ",
+ Cell[BoxData[
+  FormBox[
+   SubscriptBox["s", "n"], TraditionalForm]],ExpressionUUID->
+  "6e12d354-6e6d-4a2c-89a7-ac0875012220"],
+ " < ",
+ Cell[BoxData[
+  FormBox[
+   SubscriptBox["e", "n"], TraditionalForm]],ExpressionUUID->
+  "90b131cc-4c97-45ed-baf8-1bc7d824601b"],
+ " for n \[GreaterEqual] 10.  (We have not proved this last observation.)"
+}], "Text",
+ CellChangeTimes->{{3.86137014665376*^9, 3.8613704469996223`*^9}, 
+   3.861404370501698*^9},ExpressionUUID->"39e3471a-45a4-48f6-ab19-\
+fe72c71d6353"],
+
+Cell["\<\
+That was easy to program, but it hides a computation done by the computer \
+algebra system.  See the notebook sequences-recurrence.nb for a more \
+elementary method of computing these sequences.\
+\>", "Text",
+ CellChangeTimes->{{3.86130293003695*^9, 3.8613029581925287`*^9}, {
+  3.86130433573938*^9, 3.861304488868884*^9}, {3.861305558076564*^9, 
+  3.8613055774264708`*^9}, {3.8613136698553047`*^9, 3.861313675060329*^9}, {
+  3.86131372499844*^9, 3.861314104581334*^9}, {3.8613141404936743`*^9, 
+  3.861314151984344*^9}, {3.8614039848718987`*^9, 
+  3.861404038694715*^9}},ExpressionUUID->"fd5ba6ef-9873-41d3-a77c-\
+a52b18c5a388"]
+},
+WindowSize->{1073, 928},
+WindowMargins->{{50, Automatic}, {219, Automatic}},
+Magnification:>1.25 Inherited,
+FrontEndVersion->"12.2 for Mac OS X x86 (64-bit) (December 12, 2020)",
+StyleDefinitions->"Default.nb",
+ExpressionUUID->"e13a837a-31ef-4c1d-b063-bcc1ea0e04aa"
+]
+(* End of Notebook Content *)
+
+(* Internal cache information *)
+(*CellTagsOutline
+CellTagsIndex->{}
+*)
+(*CellTagsIndex
+CellTagsIndex->{}
+*)
+(*NotebookFileOutline
+Notebook[{
+Cell[558, 20, 3081, 85, 303, "Text",ExpressionUUID->"c2c24569-3262-4c53-88ee-7654f3fac1f3"],
+Cell[3642, 107, 651, 12, 64, "Input",ExpressionUUID->"a8c648c3-6b5c-412d-8846-66ab18d8d841"],
+Cell[CellGroupData[{
+Cell[4318, 123, 3031, 81, 217, "Input",ExpressionUUID->"9d0087a4-a9c7-412c-a1b7-8399f4a3817a"],
+Cell[7352, 206, 1451, 26, 102, "Print",ExpressionUUID->"c1a3cff1-25fa-4759-a242-a1a5cfd8b24c"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[8840, 237, 1860, 50, 180, "Input",ExpressionUUID->"5e151c00-e1e6-43b6-b7ef-4d141473d5e9"],
+Cell[10703, 289, 1203, 23, 78, "Print",ExpressionUUID->"f045fb38-a2d8-423a-94e5-6dde8f15e00b"]
+}, Open  ]],
+Cell[11921, 315, 826, 23, 44, "Text",ExpressionUUID->"11e351df-5f77-40eb-86ff-86814cecc4f1"],
+Cell[CellGroupData[{
+Cell[12772, 342, 451, 9, 69, "Input",ExpressionUUID->"0cc7400e-19c2-4116-b361-991ee1d58279"],
+Cell[13226, 353, 1313, 24, 102, "Print",ExpressionUUID->"1fb5836c-1a85-4c99-bfdb-53338cb0c7ca"]
+}, Open  ]],
+Cell[14554, 380, 1275, 38, 73, "Text",ExpressionUUID->"49b47dfe-f120-4531-b5fc-b856267ca9a7"],
+Cell[CellGroupData[{
+Cell[15854, 422, 2151, 57, 209, "Input",ExpressionUUID->"fd346542-f930-4f39-9dff-407712bcd722"],
+Cell[18008, 481, 1286, 24, 78, "Print",ExpressionUUID->"28d68dd5-1d8d-43c4-a36c-210a7811807d"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[19331, 510, 2358, 62, 183, "Input",ExpressionUUID->"b1c2de94-31f7-4395-81d3-d4e642baeb21"],
+Cell[21692, 574, 1402, 26, 102, "Print",ExpressionUUID->"dd3b5764-03d8-4242-9c6b-7e08438a4745"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[23131, 605, 3079, 82, 184, "Input",ExpressionUUID->"32c399e0-9275-4847-9eb1-b0e737536c29"],
+Cell[26213, 689, 1411, 26, 78, "Print",ExpressionUUID->"3647bb34-43ed-4b9e-9733-5e5d272d224d"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[27661, 720, 1096, 24, 64, "Input",ExpressionUUID->"19fef3dd-6083-4626-b353-3410eb86c997"],
+Cell[28760, 746, 3376, 71, 187, "Output",ExpressionUUID->"94a006fd-7512-4e9d-b171-d2f9ec922b99"]
+}, Open  ]],
+Cell[32151, 820, 431, 8, 73, "Text",ExpressionUUID->"e2b2863e-aff1-4a4c-a7e0-b442ce6f8020"],
+Cell[CellGroupData[{
+Cell[32607, 832, 257, 5, 37, "Input",ExpressionUUID->"84dc143c-86ba-4bef-a52e-edb5c6ad6dbc"],
+Cell[32867, 839, 199, 3, 42, "Output",ExpressionUUID->"b1b47605-4b81-4009-8bcf-5afef7d654fb"]
+}, Open  ]],
+Cell[33081, 845, 1154, 35, 44, "Text",ExpressionUUID->"39e3471a-45a4-48f6-ab19-fe72c71d6353"],
+Cell[34238, 882, 639, 11, 73, "Text",ExpressionUUID->"fd5ba6ef-9873-41d3-a77c-a52b18c5a388"]
+}
+]
+*)
+
