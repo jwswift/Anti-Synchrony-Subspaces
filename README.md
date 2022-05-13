@@ -6,4 +6,5 @@ To download the files, use the green Code button and save the zip file to your h
 
 You need access to the Mathematica program to run the notebooks (foo.nb) but you can see the code and the output at foo.pdf.
 
-The two "Sequences*.nb" notebooks each make a version of Figure 6 with nMax = 20, using two different methods.  The paper uses nMax = 8.  You can run with larger values of nMax.
+The two "Sequences*.nb" notebooks each make a version of Figure 6 with nMax = 20, using two different methods.  The paper uses nMax = 8.  
+You can run the notebooks with larger values of nMax.
